@@ -1,0 +1,32 @@
+language: cpp
+git:
+  depth: 3  # if depth=1 and have a queue of jobs, Travis won’t build commits from the queue if you push a new commit
+matrix:
+  include:
+    - os: linux
+      name: Linux-Ubuntu-18.04
+      sudo: required
+      services: docker
+      env: SH="docker exec -t ubuntu-test bash -c"
+      before_install:
+        - docker run -d --name ubuntu-test -e LC_ALL="en_US.UTF-8" -e LANG="en_US.UTF-8" -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
+      install:
+        - $SH "apt-get update"
+        - $SH "apt-get install -y locales && locale-gen en_US.UTF-8"
+        - $SH "apt-get install -y g++ gfortran cmake"
+      script:
+        - $SH "mkdir build && cd build && cmake .. && make -j 2 && ./TestCentos"
+        - $SH "gfortran -o testgfortran main.f90 && ./testgfortran"
+    - os: linux
+      name: Linux-CentOS-7.5.1804
+      sudo: required
+      services: docker
+      env: SH="docker exec -t centos-test bash -c"
+      before_install:
+        - docker run -d --name centos-test -e LC_ALL="en_US.UTF-8" -e LANG="en_US.UTF-8" -v $(pwd):/travis -w /travis centos:centos7.5.1804 tail -f /dev/null
+      install:
+        - $SH "yum check-update"
+        - $SH "yum install gcc-gfortran gcc-c++ cmake"
+      script:
+        - $SH "mkdir build && cd build && cmake .. && make -j 2 && ./TestCentos"
+        - $SH "gfortran -o testgfortran main.f90 && ./testgfortran"
