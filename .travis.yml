@@ -1,6 +1,4 @@
 language: cpp
-git:
-  depth: 3  # if depth=1 and have a queue of jobs, Travis won’t build commits from the queue if you push a new commit
 matrix:
   include:
     - os: linux
@@ -26,7 +24,6 @@ matrix:
         - docker run -d --name centos-test -e LC_ALL="en_US.UTF-8" -e LANG="en_US.UTF-8" -v $(pwd):/travis -w /travis centos:centos7.5.1804 tail -f /dev/null
       install:
         - $SH "yum install -y gcc-gfortran cmake gcc-c++ libgfortran-static.x86_64 wget make"
-        # - $SH "wget https://cmake.org/files/v3.6/cmake-3.6.2.tar.gz && tar -zxf cmake-3.6.2.tar.gz && cd cmake-3.6.2 && ./bootstrap --prefix=/usr/local && make && make install"
       script:
         - $SH "mkdir build && cd build && cmake .. && make -j 2 && ./TestCentos"
         - $SH "gfortran -o testgfortran main.f90 && ./testgfortran"
