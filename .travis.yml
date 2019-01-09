@@ -26,7 +26,7 @@ matrix:
         - docker run -d --name centos-test -e LC_ALL="en_US.UTF-8" -e LANG="en_US.UTF-8" -v $(pwd):/travis -w /travis centos:centos7.5.1804 tail -f /dev/null
       install:
         # - $SH "yum check-update"
-        - $SH "yum install gcc-gfortran gcc-c++ cmake"
+        - $SH "yum install -y gcc-gfortran gcc-c++ cmake libgfortran-static.x86_64"
       script:
         - $SH "mkdir build && cd build && cmake .. && make -j 2 && ./TestCentos"
         - $SH "gfortran -o testgfortran main.f90 && ./testgfortran"
